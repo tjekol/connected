@@ -1,0 +1,12 @@
+<main class="main">
+  <div class="content">
+    <h1>Hi, server is running!</h1>
+    <ul>
+      @for (item of items$ | async; track item) {
+      <li>{{ item.firstName }} {{ item.lastName }}</li>
+      }
+    </ul>
+  </div>
+</main>
+
+<router-outlet />
