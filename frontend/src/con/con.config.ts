@@ -8,9 +8,9 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
-import { environment } from '../environment/environment';
+import { env } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(), provideFirebaseApp(() => initializeApp({ "projectId": `${environment.projectId}`, "appId": `${environment.appId}`, "storageBucket": `${environment.storageBucket}`, "apiKey": `${environment.apiKey}`, "authDomain": `${environment.authDomain}`, "messagingSenderId": `${environment.messagingSenderId}` })), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()), provideDatabase(() => getDatabase()), provideStorage(() => getStorage()), provideFirebaseApp(() => initializeApp({ "projectId": `${environment.projectId}`, "appId": `${environment.appId}`, "storageBucket": `${environment.storageBucket}`, "apiKey": `${environment.apiKey}`, "authDomain": `${environment.authDomain}`, "messagingSenderId": `${environment.messagingSenderId}` })), provideFirestore(() => getFirestore())]
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(), provideFirebaseApp(() => initializeApp({ "projectId": `${env.projectId}`, "appId": `${env.appId}`, "storageBucket": `${env.storageBucket}`, "apiKey": `${env.apiKey}`, "authDomain": `${env.authDomain}`, "messagingSenderId": `${env.messagingSenderId}` })), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()), provideDatabase(() => getDatabase()), provideStorage(() => getStorage()), provideFirebaseApp(() => initializeApp({ "projectId": `${env.projectId}`, "appId": `${env.appId}`, "storageBucket": `${env.storageBucket}`, "apiKey": `${env.apiKey}`, "authDomain": `${env.authDomain}`, "messagingSenderId": `${env.messagingSenderId}` })), provideFirestore(() => getFirestore())]
 };
 
