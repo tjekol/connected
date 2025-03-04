@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { collection, collectionData, Firestore } from '@angular/fire/firestore';
 import { RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ButtonComponent } from './button/button.component';
+import { ButtonComponent } from './component/button/button.component';
 
 @Component({
   selector: 'con-root',
