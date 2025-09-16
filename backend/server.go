@@ -1,28 +1,35 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/tjekol/backend/data"
 )
 
-type User struct {
-	ID					string `json:"id"`
-	Username		string `json:"username"`
-	Password		string `json:"password"`
-}
-
-var users []User
+var db *sql.DB
 
 func main() {
+
+	var err error
+	db, err = data.InitDB()
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
+
+	defer db.Close()
+
+	// Set up routes
 	router := mux.NewRouter()
 	router.HandleFunc("/", handler).Methods("GET")
-	router.HandleFunc("/users", getUsers).Methods("GET")
-	router.HandleFunc("/users", createUser).Methods("POST")
+	router.HandleFunc("/user", getUsers).Methods("GET")
+	router.HandleFunc("/user", createUser).Methods("POST")
 
+	fmt.Println("Server starting on localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
@@ -31,13 +38,32 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := data.GetUsers(db)
+	if err != nil {
+		http.Error(w, "Failed to get users", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
-	// fmt.Println(users)
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
-	var newUser User
-	_ = json.NewDecoder(r.Body).Decode(&newUser)
-	users = append(users, newUser)
-	json.NewEncoder(w).Encode(newUser)
+	var newUser data.User
+	err := json.NewDecoder(r.Body).Decode(&newUser)
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	// Insert user to DB and get the user with the generated ID
+	createdUser, err := data.CreateUser(db, newUser)
+	if err != nil {
+		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+		return
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(createdUser)
 }
