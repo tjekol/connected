@@ -23,7 +23,8 @@ func GetUsers(db *sql.DB) ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var user User
-		if err := rows.Scan(&user.ID, &user.Username, &user.Password, &user.Name); err != nil {
+		if err := rows.Scan(&user.ID, &user.Username, &user.Password, &user.Name); 
+		err != nil {
 			log.Fatal(err)
 		}
 		users = append(users, user)
@@ -33,6 +34,21 @@ func GetUsers(db *sql.DB) ([]User, error) {
 	}
 
 	return users, nil
+}
+
+func GetUserByID(db *sql.DB, id int) (*User, error) {
+	query := "SELECT id, username, password, name FROM user WHERE id = ?"
+	row := db.QueryRow(query, id)
+
+	var user User
+	err := row.Scan(&user.ID, &user.Username, &user.Password, &user.Name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("user not found")
+		}
+		return nil, fmt.Errorf("error scanning user: %v", err)
+	}
+	return &user, nil
 }
 
 func CreateUser(db *sql.DB, user User) (*User, error) {
