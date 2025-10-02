@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"github.com/tjekol/backend/data"
 	"github.com/tjekol/backend/handlers"
 )
@@ -32,8 +33,16 @@ func main() {
 	router.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
 	router.HandleFunc("/user", handlers.CreateUser).Methods("POST")
 
+	c := cors.New(cors.Options{
+    AllowedOrigins: []string{"http://localhost:3000"},
+    AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+    AllowedHeaders: []string{"Content-Type", "Authorization"},
+	})
+
+	handler := c.Handler(router)
+
 	fmt.Println("Server starting on localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
