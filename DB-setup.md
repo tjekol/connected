@@ -35,12 +35,14 @@ pass: Bella
     ('kas', 'Bella', 'Kassa'),
     ('trymster', 'Hansa', 'Trymmelum');
    ```
-4. Display table
+4. Display tables and table
+   `show tables;`
    `select * from user;`
 
 ### Use database with Go
 
+1. Start server
+
 ```
-export DBUSER=root
-export DBPASS=Bella
+DBUSER="root" DBPASS="Bella" go run server.go
 ```
